@@ -12,7 +12,8 @@ function main() begin
     chars = inf.read().chars()
     s = '$html += "'
     for i = 0 to chars.length() begin
-        if chars[i] == '{' and i + 1 < chars.length() and chars[i+1] == '{' begin
+        char = chars[i]
+        if char == '{' and i + 1 < chars.length() and chars[i+1] == '{' begin
             i += 2
             s += '"\n'
             if i < chars.length() and chars[i] == ':' begin
@@ -36,7 +37,7 @@ function main() begin
                     char = chars[i]
                     if char == '}' and i + 1 < chars.length() and chars[i+1] == '}' begin
                         i += 1
-                        s += ('\n$html += "')
+                        s += '\n$html += "'
                         break
                     end
                     else begin
@@ -46,8 +47,8 @@ function main() begin
                 end
             end
         end
-        else if chars[i] == '"' then s += '\\"'
-        else s += chars[i]
+        else if char == '"' then s += '\\"'
+        else s += char
     end
     s += '"'
     //print(s)
