@@ -1,0 +1,59 @@
+html = ''
+
+function out(s) begin
+    $html += String(s)
+end
+
+function main() begin
+    args = Sys::args()
+    if args.length() < 3 then return print("can i haz input & out?\n")
+    inf = File(args[1], "r")
+    outf = File(args[2], "cwt")
+    chars = inf.read().chars()
+    s = '$html += "'
+    for i = 0 to chars.length() begin
+        if chars[i] == '{' and i + 1 < chars.length() and chars[i+1] == '{' begin
+            i += 2
+            s += '"\n'
+            if i < chars.length() and chars[i] == ':' begin
+                i += 1
+                s += 'out('
+                while i < chars.length() begin
+                    char = chars[i]
+                    if char == '}' and i + 1 < chars.length() and chars[i+1] == '}' begin
+                        i += 1
+                        s += ')\n$html += "'
+                        break
+                    end
+                    else begin
+                        i += 1
+                        s += char
+                    end
+                end
+            end
+            else begin
+                while i < chars.length() begin
+                    char = chars[i]
+                    if char == '}' and i + 1 < chars.length() and chars[i+1] == '}' begin
+                        i += 1
+                        s += ('\n$html += "')
+                        break
+                    end
+                    else begin
+                        i += 1
+                        s += char
+                    end
+                end
+            end
+        end
+        else if chars[i] == '"' then s += '\\"'
+        else s += chars[i]
+    end
+    s += '"'
+    //print(s)
+    if eval(s) == false then return print("cant ")
+    outf.write(html)
+    inf.close()
+end
+
+main()
